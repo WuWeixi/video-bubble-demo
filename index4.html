@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+
+  <!-- 安卓手机移动端适配关键设置 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+  <title>Breathing Bubble Video Mobile Demo</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #03040a;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
+      color: #fff;
+      touch-action: manipulation;
+    }
+
+    body {
+      position: fixed;
+      inset: 0;
+    }
+
+    .page {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      height: 100svh;
+      overflow: hidden;
+      background: #03040a;
+    }
+
+    /* =========================
+       背景视频
+    ========================= */
+
+    .video-layer {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      overflow: hidden;
+      background: #03040a;
+    }
+
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.76;
+      transform: scale(1.08);
+      filter: saturate(1.22) contrast(1.08) brightness(0.88);
+      animation: videoBreath 7s ease-in-out infinite;
+      transition: opacity 0.65s ease, filter 0.8s ease, transform 0.8s ease;
+    }
+
+    video.is-changing {
+      opacity: 0;
+      transform: scale(1.16);
+      filter: blur(10px) saturate(1.45);
+    }
+
+    @keyframes videoBreath {
+      0% {
+        transform: scale(1.06);
+        filter: saturate(1.08) brightness(0.82);
+      }
+
+      50% {
+        transform: scale(1.13);
+        filter: saturate(1.38) brightness(1.08);
+      }
+
+      100% {
+        transform: scale(1.06);
+        filter: saturate(1.08) brightness(0.82);
+      }
+    }
+
+    /* 暗色遮罩 */
+    .overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+      background:
+        radial-gradient(
+          circle at 50% 44%,
+          rgba(255,255,255,0.08),
+          rgba(0,0,0,0.12) 32%,
+          rgba(0,0,0,0.76) 82%
+        ),
+        linear-gradient(
+          to bottom,
+          rgba(0,0,0,0.18),
+          rgba(0,0,0,0.72)
+        );
+    }
+
+    /* =========================
+       背景呼吸光效
+    ========================= */
+
+    .aurora {
+      position: absolute;
+      z-index: 3;
+      inset: -25%;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 18% 28%, rgba(0, 209, 255, 0.32), transparent 30%),
+        radial-gradient(circle at 78% 26%, rgba(255, 98, 236, 0.3), transparent 32%),
+        radial-gradient(circle at 54% 78%, rgba(255, 214, 102, 0.2), transparent 34%),
+        radial-gradient(circle at 64% 58%, rgba(119, 95, 255, 0.3), transparent 32%);
+      filter: blur(46px);
+      mix-blend-mode: screen;
+      animation: auroraFlow 10s ease-in-out infinite alternate;
+      opacity: 0.82;
+    }
+
+    @keyframes auroraFlow {
+      0% {
+        transform: translate3d(-4%, -2%, 0) rotate(0deg) scale(1);
+        opacity: 0.48;
+      }
+
+      50% {
+        transform: translate3d(4%, 3%, 0) rotate(8deg) scale(1.08);
+        opacity: 0.94;
+      }
+
+      100% {
+        transform: translate3d(-1%, 4%, 0) rotate(-6deg) scale(1.04);
+        opacity: 0.66;
+      }
+    }
+
+    .breathing-glow {
+      position: absolute;
+      left: 50%;
+      top: 45%;
+      z-index: 3;
+      width: 110vw;
+      height: 110vw;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      background:
+        radial-gradient(
+          circle,
+          rgba(255,255,255,0.55) 0%,
+          rgba(144,213,255,0.48) 18%,
+          rgba(139,104,255,0.36) 38%,
+          rgba(255,115,221,0.24) 56%,
+          rgba(255,255,255,0) 74%
+        );
+      filter: blur(32px);
+      mix-blend-mode: screen;
+      pointer-events: none;
+      animation: strongBreathe 4.8s ease-in-out infinite;
+    }
+
+    @keyframes strongBreathe {
+      0% {
+        transform: translate(-50%, -50%) scale(0.72);
+        opacity: 0.32;
+        filter: blur(44px);
+      }
+
+      45% {
+        transform: translate(-50%, -50%) scale(1.18);
+        opacity: 0.96;
+        filter: blur(24px);
+      }
+
+      100% {
+        transform: translate(-50%, -50%) scale(0.72);
+        opacity: 0.32;
+        filter: blur(44px);
+      }
+    }
+
+    .pulse-ring {
+      position: absolute;
+      left: 50%;
+      top: 48%;
+      z-index: 3;
+      width: 80vw;
+      height: 80vw;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.28);
+      transform: translate(-50%, -50%);
+      box-shadow:
+        0 0 70px rgba(125,180,255,0.3),
+        inset 0 0 70px rgba(255,255,255,0.08);
+      animation: pulseRing 4.8s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    @keyframes pulseRing {
+      0% {
+        transform: translate(-50%, -50%) scale(0.76);
+        opacity: 0;
+      }
+
+      35% {
+        opacity: 0.58;
+      }
+
+      70% {
+        transform: translate(-50%, -50%) scale(1.34);
+        opacity: 0.08;
+      }
+
+      100% {
+        transform: translate(-50%, -50%) scale(1.44);
+        opacity: 0;
+      }
+    }
+
+    /* =========================
+       内容层
+    ========================= */
+
+    .content {
+      position: relative;
+      z-index: 4;
+      width: 100%;
+      height: 100%;
+      padding: 8vh 22px 4vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .eyebrow {
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.68);
+      margin-bottom: 12px;
+      text-shadow: 0 0 22px rgba(255,255,255,0.25);
+    }
+
+    h1 {
+      font-size: clamp(46px, 15vw, 72px);
+      line-height: 0.95;
+      font-weight: 650;
+      letter-spacing: -0.06em;
+      margin-bottom: 16px;
+      text-shadow:
+        0 18px 70px rgba(0,0,0,0.54),
+        0 0 40px rgba(166,204,255,0.32);
+    }
+
+    .desc {
+      width: min(86vw, 420px);
+      min-height: 58px;
+      font-size: 14px;
+      line-height: 1.55;
+      color: rgba(255,255,255,0.76);
+      margin-bottom: 16px;
+      text-shadow: 0 8px 28px rgba(0,0,0,0.45);
+    }
+
+    /* =========================
+       三角形圆球气泡
+    ========================= */
+
+    .bubble-stage {
+      position: relative;
+      width: 100%;
+      max-width: 390px;
+      height: 360px;
+      margin-top: 2vh;
+    }
+
+    .sphere-btn {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+
+      width: var(--size);
+      height: var(--size);
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.48);
+
+      cursor: pointer;
+      overflow: hidden;
+      outline: none;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      color: rgba(255,255,255,0.94);
+      font-size: var(--font-size);
+      font-weight: 700;
+      letter-spacing: 0.01em;
+
+      background:
+        radial-gradient(
+          circle at 30% 22%,
+          rgba(255,255,255,0.95) 0%,
+          rgba(255,255,255,0.42) 12%,
+          rgba(255,255,255,0.08) 28%,
+          transparent 40%
+        ),
+        radial-gradient(
+          circle at 70% 78%,
+          rgba(88,220,255,0.42),
+          transparent 44%
+        ),
+        linear-gradient(
+          135deg,
+          rgba(255,255,255,0.34),
+          rgba(255,255,255,0.08) 42%,
+          rgba(255,255,255,0.18)
+        );
+
+      backdrop-filter: blur(24px) saturate(1.8);
+      -webkit-backdrop-filter: blur(24px) saturate(1.8);
+
+      box-shadow:
+        0 26px 72px rgba(0,0,0,0.36),
+        0 0 36px rgba(123,210,255,0.3),
+        inset 0 3px 8px rgba(255,255,255,0.72),
+        inset -18px -26px 46px rgba(255,255,255,0.08),
+        inset 16px 20px 50px rgba(255,255,255,0.12);
+
+      animation: sphereFloat 5.6s ease-in-out infinite;
+      transition:
+        box-shadow 0.35s ease,
+        border-color 0.35s ease,
+        color 0.25s ease;
+    }
+
+    .sphere-btn span {
+      position: relative;
+      z-index: 3;
+      text-shadow:
+        0 2px 12px rgba(0,0,0,0.4),
+        0 0 24px rgba(255,255,255,0.32);
+    }
+
+    .sphere-btn::before {
+      content: "";
+      position: absolute;
+      inset: -35%;
+      border-radius: 50%;
+      filter: blur(13px);
+      opacity: 0.72;
+      animation: sphereColorFlow 7s linear infinite;
+      z-index: 1;
+    }
+
+    .sphere-btn::after {
+      content: "";
+      position: absolute;
+      left: 22%;
+      top: 16%;
+      width: 34%;
+      height: 24%;
+      border-radius: 50%;
+      background:
+        linear-gradient(
+          135deg,
+          rgba(255,255,255,0.96),
+          rgba(255,255,255,0.12)
+        );
+      filter: blur(1px);
+      opacity: 0.78;
+      transform: rotate(-18deg);
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    /* 大球：Movie，顶部居中 */
+    .sphere-large {
+      --size: 168px;
+      --font-size: 23px;
+      --x: -50%;
+      --y: -158px;
+      --float: -12px;
+      --scale: 1;
+      animation-delay: 0s;
+    }
+
+    /* 中球：Sport，左下 */
+    .sphere-medium {
+      --size: 132px;
+      --font-size: 19px;
+      --x: -156px;
+      --y: 52px;
+      --float: -9px;
+      --scale: 1;
+      animation-delay: 0.8s;
+    }
+
+    /* 小球：Fun，右下 */
+    .sphere-small {
+      --size: 108px;
+      --font-size: 17px;
+      --x: 48px;
+      --y: 88px;
+      --float: -7px;
+      --scale: 1;
+      animation-delay: 1.5s;
+    }
+
+    /* Movie 蓝紫 */
+    .sphere-large::before {
+      background:
+        conic-gradient(
+          from 130deg,
+          rgba(0,180,255,0),
+          rgba(0,188,255,0.62),
+          rgba(126,96,255,0.56),
+          rgba(255,255,255,0.22),
+          rgba(0,180,255,0)
+        );
+    }
+
+    /* Sport 橙红 */
+    .sphere-medium::before {
+      background:
+        conic-gradient(
+          from 130deg,
+          rgba(255,126,26,0),
+          rgba(255,126,26,0.62),
+          rgba(255,54,112,0.56),
+          rgba(255,226,112,0.48),
+          rgba(255,126,26,0)
+        );
+    }
+
+    /* Fun 粉蓝 */
+    .sphere-small::before {
+      background:
+        conic-gradient(
+          from 130deg,
+          rgba(255,86,222,0),
+          rgba(255,86,222,0.62),
+          rgba(76,226,255,0.56),
+          rgba(255,228,98,0.5),
+          rgba(255,86,222,0)
+        );
+    }
+
+    @keyframes sphereFloat {
+      0% {
+        transform: translate(var(--x), var(--y)) scale(var(--scale));
+      }
+
+      45% {
+        transform: translate(var(--x), calc(var(--y) + var(--float))) scale(calc(var(--scale) * 1.025));
+      }
+
+      100% {
+        transform: translate(var(--x), var(--y)) scale(var(--scale));
+      }
+    }
+
+    @keyframes sphereColorFlow {
+      0% {
+        transform: rotate(0deg) scale(1);
+      }
+
+      100% {
+        transform: rotate(360deg) scale(1.06);
+      }
+    }
+
+    /* 安卓触控按下反馈 */
+    .sphere-btn:active {
+      --scale: 1.08;
+      border-color: rgba(255,255,255,0.82);
+      box-shadow:
+        0 32px 88px rgba(0,0,0,0.42),
+        0 0 54px rgba(112,220,255,0.62),
+        0 0 90px rgba(190,112,255,0.42),
+        inset 0 4px 10px rgba(255,255,255,0.88),
+        inset -22px -30px 54px rgba(255,255,255,0.12);
+    }
+
+    .sphere-btn.active {
+      --scale: 1.12;
+
+      color: #fff;
+      border-color: rgba(255,255,255,0.92);
+
+      box-shadow:
+        0 42px 110px rgba(0,0,0,0.48),
+        0 0 62px rgba(114,225,255,0.76),
+        0 0 104px rgba(178,118,255,0.52),
+        0 0 140px rgba(255,118,222,0.32),
+        inset 0 4px 12px rgba(255,255,255,0.96),
+        inset -24px -34px 60px rgba(255,255,255,0.16);
+    }
+
+    .sphere-btn.active::before {
+      opacity: 0.98;
+      filter: blur(10px);
+    }
+
+    .sphere-btn.active span::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: calc(var(--size) * 0.98);
+      height: calc(var(--size) * 0.98);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      border: 1px solid rgba(255,255,255,0.38);
+      box-shadow:
+        0 0 36px rgba(146,220,255,0.52),
+        0 0 80px rgba(180,120,255,0.36);
+      animation: activeSpherePulse 3.2s ease-in-out infinite;
+      z-index: -1;
+    }
+
+    @keyframes activeSpherePulse {
+      0% {
+        opacity: 0.24;
+        transform: translate(-50%, -50%) scale(0.92);
+      }
+
+      50% {
+        opacity: 0.76;
+        transform: translate(-50%, -50%) scale(1.12);
+      }
+
+      100% {
+        opacity: 0.24;
+        transform: translate(-50%, -50%) scale(0.92);
+      }
+    }
+
+    .mode-label {
+      margin-top: auto;
+      padding-bottom: 16px;
+      font-size: 11px;
+      color: rgba(255,255,255,0.56);
+      letter-spacing: 0.08em;
+      text-shadow: 0 0 18px rgba(255,255,255,0.18);
+    }
+
+    /* 视频需要用户点击时的提示层 */
+    .tap-to-play {
+      position: absolute;
+      left: 50%;
+      bottom: 28px;
+      z-index: 8;
+      transform: translateX(-50%);
+      padding: 10px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.24);
+      background: rgba(255,255,255,0.12);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      color: rgba(255,255,255,0.86);
+      font-size: 12px;
+      display: none;
+    }
+
+    .tap-to-play.show {
+      display: block;
+    }
+
+    /* 更小屏安卓手机 */
+    @media (max-height: 720px) {
+      .content {
+        padding-top: 5vh;
+      }
+
+      h1 {
+        font-size: 44px;
+        margin-bottom: 12px;
+      }
+
+      .desc {
+        font-size: 13px;
+        margin-bottom: 8px;
+      }
+
+      .bubble-stage {
+        height: 320px;
+        transform: scale(0.92);
+        transform-origin: center top;
+      }
+
+      .mode-label {
+        padding-bottom: 8px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <!-- 背景视频 -->
+    <div class="video-layer">
+      <video
+        id="mainVideo"
+        src="assets/movie.mp4"
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="auto"
+      ></video>
+    </div>
+
+    <!-- 背景光效 -->
+    <div class="overlay"></div>
+    <div class="aurora"></div>
+    <div class="breathing-glow"></div>
+    <div class="pulse-ring"></div>
+
+    <!-- 内容 -->
+    <section class="content">
+      <div class="eyebrow">Breathing Video Interface</div>
+
+      <h1 id="title">Movie</h1>
+
+      <p class="desc" id="description">
+        A cinematic visual mode with immersive atmosphere, soft rhythm, and flowing light.
+      </p>
+
+      <!-- 三角形圆球气泡 -->
+      <div class="bubble-stage">
+        <button class="sphere-btn sphere-large active" data-mode="movie">
+          <span>Movie</span>
+        </button>
+
+        <button class="sphere-btn sphere-medium" data-mode="sport">
+          <span>Sport</span>
+        </button>
+
+        <button class="sphere-btn sphere-small" data-mode="fun">
+          <span>Fun</span>
+        </button>
+      </div>
+
+      <div class="mode-label" id="modeLabel">CURRENT MODE · MOVIE</div>
+    </section>
+
+    <div class="tap-to-play" id="tapToPlay">Tap to play video</div>
+  </main>
+
+  <script>
+    const video = document.getElementById("mainVideo");
+    const title = document.getElementById("title");
+    const description = document.getElementById("description");
+    const modeLabel = document.getElementById("modeLabel");
+    const buttons = document.querySelectorAll(".sphere-btn");
+    const tapToPlay = document.getElementById("tapToPlay");
+
+    const modes = {
+      movie: {
+        title: "Movie",
+        desc: "A cinematic visual mode with immersive atmosphere, soft rhythm, and flowing light.",
+        video: "assets/movie.mp4",
+        label: "CURRENT MODE · MOVIE"
+      },
+
+      sport: {
+        title: "Sport",
+        desc: "A high-energy mode designed for motion, speed, and dynamic visual impact.",
+        video: "assets/sport.mp4",
+        label: "CURRENT MODE · SPORT"
+      },
+
+      fun: {
+        title: "Fun",
+        desc: "A playful mode with vivid emotion, lively rhythm, and expressive visual energy.",
+        video: "assets/fun.mp4",
+        label: "CURRENT MODE · FUN"
+      }
+    };
+
+    function tryPlayVideo() {
+      const playPromise = video.play();
+
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            tapToPlay.classList.remove("show");
+          })
+          .catch(() => {
+            tapToPlay.classList.add("show");
+          });
+      }
+    }
+
+    function switchMode(modeName) {
+      const mode = modes[modeName];
+
+      if (!mode) return;
+
+      buttons.forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.mode === modeName);
+      });
+
+      title.textContent = mode.title;
+      description.textContent = mode.desc;
+      modeLabel.textContent = mode.label;
+
+      video.classList.add("is-changing");
+
+      setTimeout(() => {
+        video.src = mode.video;
+        video.load();
+
+        video.oncanplay = () => {
+          tryPlayVideo();
+          video.classList.remove("is-changing");
+        };
+      }, 420);
+    }
+
+    buttons.forEach(button => {
+      button.addEventListener("click", () => {
+        switchMode(button.dataset.mode);
+      });
+    });
+
+    document.body.addEventListener("click", () => {
+      tryPlayVideo();
+    });
+
+    window.addEventListener("load", () => {
+      tryPlayVideo();
+    });
+  </script>
+</body>
+</html>
